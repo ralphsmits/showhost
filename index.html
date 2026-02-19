@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Car Cinema</title>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        video { width: 100%; border: 1px solid #333; border-radius: 8px; background: #111; }
+        .controls { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        button { padding: 15px; background: #222; color: #fff; border: 1px solid #444; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #444; }
+        button.active { border-color: #e50914; color: #e50914; }
+        .sub-loader { margin-top: 20px; font-size: 0.9em; color: #888; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="title">Select Episode</h2>
+    
+    <video id="videoPlayer" controls crossorigin="anonymous">
+        <source id="videoSource" src="" type="video/x-matroska">
+        Your browser might not support MKV. Try Chrome on a laptop.
+    </video>
+
+    <div class="sub-loader">
+        <p>If subtitles don't show, ensure <b>episode#.srt</b> is in the root.</p>
+    </div>
+
+    <div class="controls">
+        <button onclick="playMedia(1)">Ep 1</button>
+        <button onclick="playMedia(2)">Ep 2</button>
+        <button onclick="playMedia(3)">Ep 3</button>
+        <button onclick="playMedia(4)">Ep 4</button>
+        <button onclick="playMedia(5)">Ep 5</button>
+        <button onclick="playMedia(6)">Ep 6</button>
+    </div>
+</div>
+
+<script>
+    const player = document.getElementById('videoPlayer');
+    const source = document.getElementById('videoSource');
+    const title = document.getElementById('title');
+
+    function playMedia(num) {
+        const videoFile = `episode${num}.mkv`;
+        const srtFile = `episode${num}.srt`;
+
+        title.innerText = "Playing Episode " + num;
+        
+        // Remove old tracks
+        while (player.querySelector('track')) {
+            player.removeChild(player.querySelector('track'));
+        }
+
+        // Set Video
+        source.src = videoFile;
+        
+        // Add Subtitle Track
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = 'English';
+        track.srclang = 'en';
+        track.src = srtFile;
+        track.default = true;
+        player.appendChild(track);
+
+        // Highlight active button
+        document.querySelectorAll('button').forEach((btn, i) => {
+            btn.className = (i + 1 === num) ? 'active' : '';
+        });
+
+        player.load();
+        player.play();
+    }
+</script>
+
+</body>
+</html>
